@@ -20,4 +20,26 @@ ConfigDir
 
 ## Usage
 ```rs
+let conf = ConfigFile {
+    path: "./test.yml".to_string(),
+};
+
+if !conf.exists() {
+  conf.create();
+}
+
+conf.remove();
+
+let conf = ConfigDir {
+    path: "./config/".to_string(),
+};
+
+if !conf.exists() {
+  conf.create();
+}
+
+conf.remove();
+
+let conf = ConfigFile::from_home("./test.yml".to_string());
+let conf = ConfigDir::from_home("./config/".to_string());
 ```
