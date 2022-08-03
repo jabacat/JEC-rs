@@ -112,6 +112,7 @@ mod tests {
         assert!(!conf.exists());
         conf.create();
         assert!(conf.exists());
+        fs::remove_file("./testc.yml").unwrap();
     }
 
     #[test]
@@ -164,6 +165,7 @@ mod tests {
         assert!(!conf.exists());
         conf.create();
         assert!(conf.exists());
+        fs::remove_dir("./configc/").unwrap();
     }
 
     #[test]
