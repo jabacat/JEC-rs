@@ -50,6 +50,31 @@ impl FileActions for ConfigFile {
     }
 }
 
+impl DirActions for ConfigDir {
+    fn exists(&self) -> bool {
+        Path::new(&self.path).exists()
+    }
+
+    fn create(&self) {
+        fs::create_dir_all(&self.path).unwrap();
+    }
+
+    fn remove(&self) {
+        fs::remove_dir(&self.path).unwrap();
+    }
+
+    fn from_home(path: String) -> ConfigFile {
+        let home = home_dir().unwrap();
+        let first = Path::new(&home)
+            .join(path)
+            .into_os_string()
+            .into_string()
+            .unwrap();
+
+        ConfigFile { path: first }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -59,22 +84,31 @@ mod tests {
         let conf = ConfigFile {
             path: "./test.yml".to_string(),
         };
-        assert_eq!(conf.path, "test.yml")
+        assert_eq!(conf.path, "./test.yml")
     }
 
     #[test]
     fn test_config_file_exists() {
+        if Path::new("./teste.yml").exists() {
+            fs::remove_file("./teste.yml").unwrap();
+        }
+
         let conf = ConfigFile {
-            path: "./test.yml".to_string(),
+            path: "./teste.yml".to_string(),
         };
         assert!(!conf.exists());
     }
 
     #[test]
     fn test_config_file_create() {
+        if Path::new("./testc.yml").exists() {
+            fs::remove_file("./testc.yml").unwrap();
+        }
+
         let conf = ConfigFile {
-            path: "./test.yml".to_string(),
+            path: "./testc.yml".to_string(),
         };
+
         assert!(!conf.exists());
         conf.create();
         assert!(conf.exists());
@@ -83,8 +117,10 @@ mod tests {
     #[test]
     fn test_config_file_remove() {
         let conf = ConfigFile {
-            path: "./test.yml".to_string(),
+            path: "./testr.yml".to_string(),
         };
+
+        conf.create();
         assert!(conf.exists());
         conf.remove();
         assert!(!conf.exists());
@@ -101,21 +137,29 @@ mod tests {
         let conf = ConfigFile {
             path: "./config/".to_string(),
         };
-        assert_eq!(conf.path, "config/")
+        assert_eq!(conf.path, "./config/")
     }
 
     #[test]
     fn test_config_dir_exists() {
+        if Path::new("./confige/").exists() {
+            fs::remove_dir("./confige/").unwrap();
+        }
+
         let conf = ConfigDir {
-            path: "./config/".to_string(),
+            path: "./confige/".to_string(),
         };
         assert!(!conf.exists());
     }
 
     #[test]
     fn test_config_dir_create() {
+        if Path::new("./configc/").exists() {
+            fs::remove_dir("./configc/").unwrap();
+        }
+
         let conf = ConfigDir {
-            path: "./config/".to_string(),
+            path: "./configc/".to_string(),
         };
         assert!(!conf.exists());
         conf.create();
@@ -125,8 +169,10 @@ mod tests {
     #[test]
     fn test_config_dir_remove() {
         let conf = ConfigDir {
-            path: "./config/".to_string(),
+            path: "./configr/".to_string(),
         };
+
+        conf.create();
         assert!(conf.exists());
         conf.remove();
         assert!(!conf.exists());
