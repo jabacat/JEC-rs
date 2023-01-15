@@ -3,22 +3,22 @@ use std::fs;
 use std::fs::File;
 use std::path::Path;
 
-struct ConfigFile {
+pub struct ConfigFile {
     path: String,
 }
 
-trait FileActions {
+pub trait FileActions {
     fn exists(&self) -> bool;
     fn create(&self);
     fn remove(&self);
     fn from_home(path: String) -> ConfigFile;
 }
 
-struct ConfigDir {
+pub struct ConfigDir {
     path: String,
 }
 
-trait DirActions {
+pub trait DirActions {
     fn exists(&self) -> bool;
     fn create(&self);
     fn remove(&self);
